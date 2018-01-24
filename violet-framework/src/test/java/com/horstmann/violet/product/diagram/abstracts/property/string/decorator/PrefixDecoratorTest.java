@@ -1,4 +1,4 @@
-package com.horstmann.violet.product.diagram.abstracts.property.string.decorator;
+/**package com.horstmann.violet.product.diagram.abstracts.property.string.decorator;
 
 import com.horstmann.violet.product.diagram.property.text.decorator.OneLineText;
 import com.horstmann.violet.product.diagram.property.text.decorator.PrefixDecorator;
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  * @author Adrian Bobrowski
  * @date 12.01.2016
  */
-public class PrefixDecoratorTest
+/**public class PrefixDecoratorTest
 {
     @Test
     public void testSetPrefix() throws Exception
@@ -29,4 +29,4 @@ public class PrefixDecoratorTest
         PrefixDecorator prefixDecorator = new PrefixDecorator(new OneLineText("test"),"<prefix>");
         assertEquals("<prefix> test", prefixDecorator.toDisplay());
     }
-}
+}**/
