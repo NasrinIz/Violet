@@ -75,6 +75,19 @@ public class MenuFactory
 
     /**
      * @param editorFrame
+     * @return option menu
+     */
+    public OptionMenu getOptionMenu(MainFrame editorFrame)
+    {
+        if (this.optionMenu == null)
+        {
+            this.optionMenu = new OptionMenu(editorFrame);
+        }
+        return this.optionMenu;
+    }
+
+    /**
+     * @param editorFrame
      * @return view menu
      */
     public ViewMenu getViewMenu(MainFrame editorFrame)
@@ -102,6 +115,7 @@ public class MenuFactory
     private EditMenu editMenu;
     private FileMenu fileMenu;
     private HelpMenu helpMenu;
+    private OptionMenu optionMenu;
     private ViewMenu viewMenu;
     private DocumentMenu documentMenu;
 
