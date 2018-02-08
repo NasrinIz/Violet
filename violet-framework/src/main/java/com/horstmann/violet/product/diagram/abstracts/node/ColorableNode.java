@@ -65,18 +65,12 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
 
     @Override
     public boolean addConnection(IEdge edge) {
-        System.out.println("add connection");
-
 
         INode endingNode = edge.getEndNode();
 
-        String name = edge.getToolTip();
-
-        System.out.println(name);
-
         List<IEdge> edges = super.getConnectedEdges();
 
-        if (edges.size() > 0) {
+        if (edges.size() > 0 && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
             for (IEdge anEdge : edges) {
 
                 String anEdgeStartingID = anEdge.getStartNode().getId().toString();

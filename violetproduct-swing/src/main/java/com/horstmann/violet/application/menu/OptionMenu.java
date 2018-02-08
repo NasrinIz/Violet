@@ -39,21 +39,17 @@ import com.horstmann.violet.framework.injection.resources.annotation.ResourceBun
  * Help menu
  *
  * @author Alexandre de Pellegrin
- *
  */
 @ResourceBundleBean(resourceReference = MenuFactory.class)
-public class OptionMenu extends JMenu
-{
+public class OptionMenu extends JMenu {
 
     /**
      * Default constructor
      *
      * @param mainFrame where this menu is atatched
-     * @param factory to access to external resources such as texts, icons
      */
     @ResourceBundleBean(key = "option")
-    public OptionMenu(MainFrame mainFrame)
-    {
+    public OptionMenu(MainFrame mainFrame) {
         ResourceBundleInjector.getInjector().inject(this);
         this.mainFrame = mainFrame;
         this.createMenu();
@@ -62,51 +58,35 @@ public class OptionMenu extends JMenu
     /**
      * Initializes menu
      */
-    private void createMenu()
-    {
+    private void createMenu() {
 
-        enableFeature1Item.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-
+        enableFeature1Item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                isEnableFeature1 = !isEnableFeature1;
+                if (enableFeature1Item.getText().equals("Enable Multiple Recursive relationships")) {
+                    enableFeature1Item.setText("Disable Multiple Recursive relationships");
+                } else if (enableFeature1Item.getText().equals("Disable Multiple Recursive relationships")) {
+                    enableFeature1Item.setText("Enable Multiple Recursive relationships");
+                }
             }
 
         });
         this.add(enableFeature1Item);
 
-        disableFeature1Item.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-
-            }
-
-        });
-        this.add(disableFeature1Item);
-
-        enableFeature2Item.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
-
+        enableFeature2Item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                isEnableFeature2 = !isEnableFeature2;
+                if (enableFeature2Item.getText().equals("Enable bi-directional relationships")) {
+                    enableFeature2Item.setText("Disable bi-directional relationships");
+                } else if (enableFeature2Item.getText().equals("Disable bi-directional relationships")) {
+                    enableFeature2Item.setText("Enable bi-directional relationships");
+                }
             }
 
         });
         this.add(enableFeature2Item);
 
-        disableFeature2Item.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-
-            }
-        });
-        this.add(disableFeature2Item);
-
     }
-
 
 
     /**
@@ -117,15 +97,11 @@ public class OptionMenu extends JMenu
     @ResourceBundleBean(key = "option.enableFeature1")
     private JMenuItem enableFeature1Item;
 
-    @ResourceBundleBean(key = "option.disableFeature1")
-    private JMenuItem disableFeature1Item;
-
     @ResourceBundleBean(key = "option.enableFeature2")
     private JMenuItem enableFeature2Item;
 
-    @ResourceBundleBean(key = "option.disableFeature2")
-    private JMenuItem disableFeature2Item;
+    private static boolean isEnableFeature1 = false;
 
-
+    private static boolean isEnableFeature2 = false;
 
 }
