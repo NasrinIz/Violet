@@ -68,42 +68,52 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         System.out.println("add connection");
 
 
-        INode staringNode = edge.getStartNode();
         INode endingNode = edge.getEndNode();
 
+        String name = edge.getToolTip();
+
+        System.out.println(name);
+
         List<IEdge> edges = super.getConnectedEdges();
-        for (IEdge anEdge : edges) {
 
-            String anEdgeStartingID = anEdge.getStartNode().getId().toString();
-            String anEdgeEndingID = anEdge.getEndNode().getId().toString();
+        if (edges.size() > 0) {
+            for (IEdge anEdge : edges) {
 
-            String startingNodeID = edge.getStartNode().getId().toString();
+                String anEdgeStartingID = anEdge.getStartNode().getId().toString();
+                String anEdgeEndingID = anEdge.getEndNode().getId().toString();
 
+                String startingNodeID = edge.getStartNode().getId().toString();
 
-            // Self call (loop)
-            if (endingNode == null) {
-                System.out.println("recursive");
-                if (anEdgeStartingID.equals(anEdgeEndingID)) {
-                    System.out.println("Can not add more than 1 recursive relationship.");
-                    DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                    dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
-                    edge.setEndNode(null);
-                    edge.setEndLocation(null);
+                // Self call (loop)
+                if (endingNode == null) {
+                    System.out.println("recursive");
+                    if (anEdgeStartingID.equals(anEdgeEndingID)) {
+                        System.out.println("Can not add more than 1 recursive relationship.");
+                        DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                        dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+                        edge.setEndNode(null);
+                        edge.setEndLocation(null);
+                    } else {
+                        edge.setEndNode(edge.getStartNode());
+                        edge.setEndLocation(edge.getStartLocation());
+                    }
                 } else {
-                    edge.setEndNode(edge.getStartNode());
-                    edge.setEndLocation(edge.getStartLocation());
-                }
-            } else {
-                String endingNodeID = edge.getEndNode().getId().toString();
+                    String endingNodeID = edge.getEndNode().getId().toString();
 
-                if (anEdgeStartingID.equals(endingNodeID) &&
-                        anEdgeEndingID.equals(startingNodeID)) {
-                    System.out.println("Can not have bidirectional connections.");
-                    DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                    dialogFactory.showWarningDialog("Can not have bidirectional connections.");
-                    edge.setEndNode(null);
-                    edge.setEndLocation(null);
+                    if (anEdgeStartingID.equals(endingNodeID) &&
+                            anEdgeEndingID.equals(startingNodeID)) {
+                        System.out.println("Can not have bidirectional connections.");
+                        DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                        dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+                        edge.setEndNode(null);
+                        edge.setEndLocation(null);
+                    }
                 }
+            }
+        } else {
+            if (endingNode == null) {
+                edge.setEndNode(edge.getStartNode());
+                edge.setEndLocation(edge.getStartLocation());
             }
         }
         return super.addConnection(edge);

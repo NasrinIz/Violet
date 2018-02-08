@@ -1,10 +1,8 @@
 package com.horstmann.violet.product.diagram.common.edge;
 
-import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.graphics.content.TextContent;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.edge.bentstyle.BentStyle;
-import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.property.text.LineText;
 import com.horstmann.violet.product.diagram.property.text.SingleLineText;
 import com.horstmann.violet.product.diagram.abstracts.Direction;
@@ -12,9 +10,6 @@ import com.horstmann.violet.product.diagram.abstracts.Direction;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-
-import static com.horstmann.violet.framework.dialog.DialogFactoryMode.INTERNAL;
 
 /**
  * TODO javadoc
@@ -99,18 +94,6 @@ public class LabeledLineEdge extends ArrowheadEdge {
     @Override
     public void draw(Graphics2D graphics) {
         super.draw(graphics);
-
-     /*   if (this.getStartLocation() == this.getEndLocation()) {
-            if (this.isMultipleRecursiveRelationship()) {
-                return;
-            }
-        }
-
-
-        if (this.isBidirectionalAggregationOrCompositionRelationship()) {
-            return;
-        }*/
-
         //Color oldColor = graphics.getColor();
         //graphics.setColor(getBorderColor());
         drawContent(graphics, startTextContent, contactPoints[0], contactPoints[1], false);
@@ -234,28 +217,6 @@ public class LabeledLineEdge extends ArrowheadEdge {
     private transient TextContent centerTextContent;
     private transient TextContent endTextContent;
 
-    private int counter;
-
-
     public static final int LABEL_GAP = 7;
 
-
-    public boolean isMultipleRecursiveRelationship() {
-
-        ArrayList<String> recursiveNodes;
-        recursiveNodes = new ArrayList<>();
-        recursiveNodes.add(this.getStartNode().getId().getValue());
-        counter++;
-
-        if(counter > 1 && recursiveNodes.contains(this.getStartNode().getId().getValue())){
-            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-            dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isBidirectionalAggregationOrCompositionRelationship() {
-        return false;
-    }
 }
