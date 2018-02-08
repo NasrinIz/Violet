@@ -1,8 +1,10 @@
 package com.horstmann.violet.product.diagram.common.edge;
 
+import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.graphics.content.TextContent;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.abstracts.edge.bentstyle.BentStyle;
+import com.horstmann.violet.product.diagram.abstracts.node.INode;
 import com.horstmann.violet.product.diagram.property.text.LineText;
 import com.horstmann.violet.product.diagram.property.text.SingleLineText;
 import com.horstmann.violet.product.diagram.abstracts.Direction;
@@ -10,6 +12,9 @@ import com.horstmann.violet.product.diagram.abstracts.Direction;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+
+import static com.horstmann.violet.framework.dialog.DialogFactoryMode.INTERNAL;
 
 /**
  * TODO javadoc
@@ -18,10 +23,8 @@ import java.awt.geom.Rectangle2D;
  * @author Adrian Bobrowski <adrian071993@gmail.com>
  * @date 22.02.2016
  */
-public class LabeledLineEdge extends ArrowheadEdge
-{
-    public LabeledLineEdge()
-    {
+public class LabeledLineEdge extends ArrowheadEdge {
+    public LabeledLineEdge() {
         super();
 
         startLabel = new SingleLineText();
@@ -33,9 +36,9 @@ public class LabeledLineEdge extends ArrowheadEdge
         endTextContent = new TextContent(endLabel);
     }
 
-    protected LabeledLineEdge(LabeledLineEdge cloned)
-    {
+    protected LabeledLineEdge(LabeledLineEdge cloned) {
         super(cloned);
+
         this.startLabel = cloned.startLabel.clone();
         this.centerLabel = cloned.centerLabel.clone();
         this.endLabel = cloned.endLabel.clone();
@@ -43,51 +46,48 @@ public class LabeledLineEdge extends ArrowheadEdge
         startTextContent = new TextContent(startLabel);
         centerTextContent = new TextContent(centerLabel);
         endTextContent = new TextContent(endLabel);
+
+
     }
 
     @Override
-    protected void beforeReconstruction()
-    {
+    protected void beforeReconstruction() {
         super.beforeReconstruction();
 
-        if(null == startLabel)
-        {
+        if (null == startLabel) {
             startLabel = new SingleLineText();
         }
-        if(null == centerLabel)
-        {
+        if (null == centerLabel) {
             centerLabel = new SingleLineText();
         }
-        if(null == endLabel)
-        {
+        if (null == endLabel) {
             endLabel = new SingleLineText();
         }
 
     }
 
-	@Override
-	protected void createContentStructure() {
-		super.createContentStructure();
-		startTextContent = new TextContent(startLabel);
-		centerTextContent = new TextContent(centerLabel);
-		endTextContent = new TextContent(endLabel);
-		
-		startLabel.reconstruction();
-		centerLabel.reconstruction();
-		endLabel.reconstruction();
-	}
-	
-	@Override
-	public void setBorderColor(Color borderColor) {
-		super.setBorderColor(borderColor);
-		startLabel.setTextColor(borderColor);
-		centerLabel.setTextColor(borderColor);
-		endLabel.setTextColor(borderColor);
-	}
-    
     @Override
-    protected IEdge copy() throws CloneNotSupportedException
-    {
+    protected void createContentStructure() {
+        super.createContentStructure();
+        startTextContent = new TextContent(startLabel);
+        centerTextContent = new TextContent(centerLabel);
+        endTextContent = new TextContent(endLabel);
+
+        startLabel.reconstruction();
+        centerLabel.reconstruction();
+        endLabel.reconstruction();
+    }
+
+    @Override
+    public void setBorderColor(Color borderColor) {
+        super.setBorderColor(borderColor);
+        startLabel.setTextColor(borderColor);
+        centerLabel.setTextColor(borderColor);
+        endLabel.setTextColor(borderColor);
+    }
+
+    @Override
+    protected IEdge copy() throws CloneNotSupportedException {
         return new LabeledLineEdge(this);
     }
 
@@ -97,160 +97,132 @@ public class LabeledLineEdge extends ArrowheadEdge
      * @param graphics the graphics context
      */
     @Override
-    public void draw(Graphics2D graphics)
-    {
+    public void draw(Graphics2D graphics) {
         super.draw(graphics);
+
+     /*   if (this.getStartLocation() == this.getEndLocation()) {
+            if (this.isMultipleRecursiveRelationship()) {
+                return;
+            }
+        }
+
+
+        if (this.isBidirectionalAggregationOrCompositionRelationship()) {
+            return;
+        }*/
+
         //Color oldColor = graphics.getColor();
         //graphics.setColor(getBorderColor());
         drawContent(graphics, startTextContent, contactPoints[0], contactPoints[1], false);
-        drawContent(graphics, centerTextContent, contactPoints[contactPoints.length/2-1], contactPoints[contactPoints.length/2], true);
-        drawContent(graphics, endTextContent, contactPoints[contactPoints.length-1], contactPoints[contactPoints.length-2], false);
+        drawContent(graphics, centerTextContent, contactPoints[contactPoints.length / 2 - 1], contactPoints[contactPoints.length / 2], true);
+        drawContent(graphics, endTextContent, contactPoints[contactPoints.length - 1], contactPoints[contactPoints.length - 2], false);
         //graphics.setColor(oldColor);
     }
 
-    private void drawContent(Graphics2D graphics, TextContent textContent, Point2D startPoint, Point2D endPoint, boolean center)
-    {
+    private void drawContent(Graphics2D graphics, TextContent textContent, Point2D startPoint, Point2D endPoint, boolean center) {
         Rectangle2D textBounds = textContent.getBounds();
         Direction direction = new Direction(startPoint, endPoint);
         Direction nearestDirection = direction.getNearestCardinalDirection();
         double x;
         double y;
 
-        if(center)
-        {
+        if (center) {
             x = (startPoint.getX() + endPoint.getX()) / 2;
             y = (startPoint.getY() + endPoint.getY()) / 2;
-        }
-        else
-        {
+        } else {
             x = startPoint.getX();
             y = startPoint.getY();
         }
 
-        if(BentStyle.FREE == getBentStyle() || BentStyle.STRAIGHT == getBentStyle())
-        {
+        if (BentStyle.FREE == getBentStyle() || BentStyle.STRAIGHT == getBentStyle()) {
             double tan = Math.atan2(direction.getY(), direction.getX());
-            if(0>direction.getX())
-            {
-                tan+=Math.PI;
+            if (0 > direction.getX()) {
+                tan += Math.PI;
             }
 
-            graphics.translate(x,y);
+            graphics.translate(x, y);
             graphics.rotate(tan);
-            if(center)
-            {
-            	textContent.draw(graphics, new Point2D.Double(-textContent.getWidth() / 2, -textContent.getHeight()));
-            }
-            else
-            {
-                if(0>direction.getX())
-                {
-                    textContent.draw(graphics, new Point2D.Double(-LABEL_GAP - textContent.getWidth(),-textContent.getHeight()));
-                }
-                else
-                {
-                    textContent.draw(graphics, new Point2D.Double(LABEL_GAP,-textContent.getHeight()));
+            if (center) {
+                textContent.draw(graphics, new Point2D.Double(-textContent.getWidth() / 2, -textContent.getHeight()));
+            } else {
+                if (0 > direction.getX()) {
+                    textContent.draw(graphics, new Point2D.Double(-LABEL_GAP - textContent.getWidth(), -textContent.getHeight()));
+                } else {
+                    textContent.draw(graphics, new Point2D.Double(LABEL_GAP, -textContent.getHeight()));
                 }
             }
             graphics.rotate(-tan);
-            graphics.translate(-x,-y);
-        }
-        else
-        {
-            if(center)
-            {
-                if(Direction.NORTH.equals(nearestDirection) || Direction.SOUTH.equals(nearestDirection))
-                {
-                    y -= textBounds.getHeight()/2;
-                }
-                else
-                {
-                    x -= textBounds.getWidth()/2;
+            graphics.translate(-x, -y);
+        } else {
+            if (center) {
+                if (Direction.NORTH.equals(nearestDirection) || Direction.SOUTH.equals(nearestDirection)) {
+                    y -= textBounds.getHeight() / 2;
+                } else {
+                    x -= textBounds.getWidth() / 2;
                     y -= textBounds.getHeight();
                 }
-            }
-            else
-            {
-                if(Direction.EAST.equals(nearestDirection))
-                {
+            } else {
+                if (Direction.EAST.equals(nearestDirection)) {
                     x += LABEL_GAP;
                     y -= textBounds.getHeight();
-                }
-                else if(Direction.WEST.equals(nearestDirection))
-                {
+                } else if (Direction.WEST.equals(nearestDirection)) {
                     x -= textBounds.getWidth() + LABEL_GAP;
                     y -= textBounds.getHeight();
-                }
-                else if(Direction.SOUTH.equals(nearestDirection))
-                {
+                } else if (Direction.SOUTH.equals(nearestDirection)) {
                     y += LABEL_GAP;
-                }
-                else if(Direction.NORTH.equals(nearestDirection))
-                {
+                } else if (Direction.NORTH.equals(nearestDirection)) {
                     y -= textBounds.getHeight() + LABEL_GAP;
                 }
             }
-            textContent.draw(graphics, new Point2D.Double(x,y));
+            textContent.draw(graphics, new Point2D.Double(x, y));
         }
     }
 
-    public LineText getStartLabel()
-    {
+    public LineText getStartLabel() {
         return startLabel;
     }
 
-    public void setStartLabel(LineText startLabel)
-    {
+    public void setStartLabel(LineText startLabel) {
         this.startLabel.setText(startLabel.toEdit());
     }
 
-    public void setStartLabel(String startLabel)
-    {
+    public void setStartLabel(String startLabel) {
         this.startLabel.setText(startLabel);
     }
 
-    public LineText getCenterLabel()
-    {
+    public LineText getCenterLabel() {
         return centerLabel;
     }
 
-    public void setCenterLabel(LineText centerLabel)
-    {
+    public void setCenterLabel(LineText centerLabel) {
         this.centerLabel.setText(centerLabel.toEdit());
     }
 
-    public void setCenterLabel(String centerLabel)
-    {
+    public void setCenterLabel(String centerLabel) {
         this.centerLabel.setText(centerLabel);
     }
 
-    public LineText getEndLabel()
-    {
+    public LineText getEndLabel() {
         return endLabel;
     }
 
-    public void setEndLabel(LineText endLabel)
-    {
+    public void setEndLabel(LineText endLabel) {
         this.endLabel.setText(endLabel.toEdit());
     }
 
-    public void setEndLabel(String endLabel)
-    {
+    public void setEndLabel(String endLabel) {
         this.endLabel.setText(endLabel);
     }
 
-    protected TextContent getStartTextContent()
-    {
+    protected TextContent getStartTextContent() {
         return startTextContent;
     }
 
-    protected TextContent getCenterTextContent()
-    {
+    protected TextContent getCenterTextContent() {
         return centerTextContent;
     }
 
-    protected TextContent getEndTextContent()
-    {
+    protected TextContent getEndTextContent() {
         return endTextContent;
     }
 
@@ -262,7 +234,28 @@ public class LabeledLineEdge extends ArrowheadEdge
     private transient TextContent centerTextContent;
     private transient TextContent endTextContent;
 
+    private int counter;
+
+
     public static final int LABEL_GAP = 7;
 
 
+    public boolean isMultipleRecursiveRelationship() {
+
+        ArrayList<String> recursiveNodes;
+        recursiveNodes = new ArrayList<>();
+        recursiveNodes.add(this.getStartNode().getId().getValue());
+        counter++;
+
+        if(counter > 1 && recursiveNodes.contains(this.getStartNode().getId().getValue())){
+            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+            dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isBidirectionalAggregationOrCompositionRelationship() {
+        return false;
+    }
 }

@@ -39,6 +39,8 @@ public class CompositionEdge extends LabeledLineEdge
     @Override
     protected CompositionEdge copy() throws CloneNotSupportedException
     {
+        System.out.println("Adding composition edge");
+
         return new CompositionEdge(this);
     }
 

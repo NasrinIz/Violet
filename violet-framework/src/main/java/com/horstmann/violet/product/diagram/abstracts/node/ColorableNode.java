@@ -24,7 +24,9 @@ package com.horstmann.violet.product.diagram.abstracts.node;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import java.util.List;
 
+import com.horstmann.violet.framework.dialog.DialogFactory;
 import com.horstmann.violet.framework.graphics.content.ContentBackground;
 import com.horstmann.violet.framework.graphics.content.ContentBorder;
 import com.horstmann.violet.framework.graphics.content.EmptyContent;
@@ -32,136 +34,149 @@ import com.horstmann.violet.framework.graphics.shape.ContentInsideRoundRectangle
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.workspace.sidebar.colortools.ColorToolsBarPanel;
 
+import static com.horstmann.violet.framework.dialog.DialogFactoryMode.INTERNAL;
+
 /**
  * A node_old that has a rectangular shape.
  */
-public abstract class ColorableNode extends AbstractNode implements IColorableNode
-{
-    public ColorableNode()
-    {
+public abstract class ColorableNode extends AbstractNode implements IColorableNode {
+    public ColorableNode() {
         super();
     }
 
-    protected ColorableNode(ColorableNode node) throws CloneNotSupportedException
-    {
+    protected ColorableNode(ColorableNode node) throws CloneNotSupportedException {
         super(node);
     }
 
     @Override
-    protected void createContentStructure()
-    {
+    protected void createContentStructure() {
         setBorder(new ContentBorder(new ContentInsideRoundRectangle(new EmptyContent()), getBorderColor()));
         setBackground(new ContentBackground(getBorder(), getBackgroundColor()));
         setContent(getBackground());
     }
 
     @Override
-    public boolean contains(Point2D p)
-    {
-        if(null != getBackground())
-        {
+    public boolean contains(Point2D p) {
+        if (null != getBackground()) {
             return getBackground().contains(p);
         }
         return getContent().contains(p);
     }
-    
+
     @Override
     public boolean addConnection(IEdge edge) {
-    	// Self call (loop)
-    	INode endingNode = edge.getEndNode();
-    	if (endingNode == null) {
-    		edge.setEndNode(edge.getStartNode());
-    		edge.setEndLocation(edge.getStartLocation());
-    	}
-    	// Back to default behavior
-    	return super.addConnection(edge);
+        System.out.println("add connection");
+
+
+        INode staringNode = edge.getStartNode();
+        INode endingNode = edge.getEndNode();
+
+        List<IEdge> edges = super.getConnectedEdges();
+        for (IEdge anEdge : edges) {
+
+            String anEdgeStartingID = anEdge.getStartNode().getId().toString();
+            String anEdgeEndingID = anEdge.getEndNode().getId().toString();
+
+            String startingNodeID = edge.getStartNode().getId().toString();
+
+
+            // Self call (loop)
+            if (endingNode == null) {
+                System.out.println("recursive");
+                if (anEdgeStartingID.equals(anEdgeEndingID)) {
+                    System.out.println("Can not add more than 1 recursive relationship.");
+                    DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                    dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+                    edge.setEndNode(null);
+                    edge.setEndLocation(null);
+                } else {
+                    edge.setEndNode(edge.getStartNode());
+                    edge.setEndLocation(edge.getStartLocation());
+                }
+            } else {
+                String endingNodeID = edge.getEndNode().getId().toString();
+
+                if (anEdgeStartingID.equals(endingNodeID) &&
+                        anEdgeEndingID.equals(startingNodeID)) {
+                    System.out.println("Can not have bidirectional connections.");
+                    DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                    dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+                    edge.setEndNode(null);
+                    edge.setEndLocation(null);
+                }
+            }
+        }
+        return super.addConnection(edge);
     }
 
     @Override
-    public Shape getShape()
-    {
+    public Shape getShape() {
         return getBounds();
     }
 
-    protected final void setBackground(ContentBackground background)
-    {
+    protected final void setBackground(ContentBackground background) {
         this.background = background;
     }
-    protected final ContentBackground getBackground()
-    {
-        if(null == background)
-        {
+
+    protected final ContentBackground getBackground() {
+        if (null == background) {
             getContent();
         }
         return background;
     }
 
-    protected final void setBorder(ContentBorder border)
-    {
+    protected final void setBorder(ContentBorder border) {
         this.border = border;
     }
-    protected final ContentBorder getBorder()
-    {
-        if(null == border)
-        {
+
+    protected final ContentBorder getBorder() {
+        if (null == border) {
             getContent();
         }
         return border;
     }
 
 
-
     @Override
-    public void setBackgroundColor(Color bgColor)
-    {
+    public void setBackgroundColor(Color bgColor) {
         backgroundColor = bgColor;
-        if(null != background)
-        {
+        if (null != background) {
             background.setBackgroundColor(bgColor);
         }
     }
 
     @Override
-    public final Color getBackgroundColor()
-    {
-        if(null == backgroundColor)
-        {
+    public final Color getBackgroundColor() {
+        if (null == backgroundColor) {
             return ColorToolsBarPanel.DEFAULT_COLOR.getBackgroundColor();
         }
         return backgroundColor;
     }
 
     @Override
-    public void setBorderColor(Color borderColor)
-    {
+    public void setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
-        if(null != border)
-        {
+        if (null != border) {
             border.setBorderColor(borderColor);
         }
     }
 
     @Override
-    public final Color getBorderColor()
-    {
-        if(null == borderColor)
-        {
+    public final Color getBorderColor() {
+        if (null == borderColor) {
             return ColorToolsBarPanel.DEFAULT_COLOR.getBorderColor();
         }
         return borderColor;
     }
 
     @Override
-    public void setTextColor(Color textColor)
-    {
+    public void setTextColor(Color textColor) {
         this.textColor = textColor;
     }
 
     @Override
-    public final Color getTextColor()
-    {
-        if(null == textColor)
-        {
+    public final Color getTextColor() {
+        if (null == textColor) {
             return ColorToolsBarPanel.DEFAULT_COLOR.getTextColor();
         }
         return textColor;
