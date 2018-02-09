@@ -29,9 +29,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import com.horstmann.violet.application.gui.MainFrame;
-import com.horstmann.violet.application.help.AboutDialog;
-import com.horstmann.violet.application.help.HelpManager;
-import com.horstmann.violet.application.help.ShortcutDialog;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 
@@ -39,9 +36,11 @@ import com.horstmann.violet.framework.injection.resources.annotation.ResourceBun
  * Help menu
  *
  * @author Alexandre de Pellegrin
+ *
  */
 @ResourceBundleBean(resourceReference = MenuFactory.class)
-public class OptionMenu extends JMenu {
+public class OptionMenu extends JMenu
+{
 
     /**
      * Default constructor
@@ -49,7 +48,8 @@ public class OptionMenu extends JMenu {
      * @param mainFrame where this menu is atatched
      */
     @ResourceBundleBean(key = "option")
-    public OptionMenu(MainFrame mainFrame) {
+    public OptionMenu(MainFrame mainFrame)
+    {
         ResourceBundleInjector.getInjector().inject(this);
         this.mainFrame = mainFrame;
         this.createMenu();
@@ -58,14 +58,17 @@ public class OptionMenu extends JMenu {
     /**
      * Initializes menu
      */
-    private void createMenu() {
+    private void createMenu()
+    {
 
-        enableFeature1Item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        enableFeature1Item.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
                 isEnableFeature1 = !isEnableFeature1;
-                if (enableFeature1Item.getText().equals("Enable Multiple Recursive relationships")) {
+                if(enableFeature1Item.getText().equals("Enable Multiple Recursive relationships")){
                     enableFeature1Item.setText("Disable Multiple Recursive relationships");
-                } else if (enableFeature1Item.getText().equals("Disable Multiple Recursive relationships")) {
+                }else if(enableFeature1Item.getText().equals("Disable Multiple Recursive relationships")){
                     enableFeature1Item.setText("Enable Multiple Recursive relationships");
                 }
             }
@@ -73,20 +76,24 @@ public class OptionMenu extends JMenu {
         });
         this.add(enableFeature1Item);
 
-        enableFeature2Item.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                isEnableFeature2 = !isEnableFeature2;
-                if (enableFeature2Item.getText().equals("Enable bi-directional relationships")) {
-                    enableFeature2Item.setText("Disable bi-directional relationships");
-                } else if (enableFeature2Item.getText().equals("Disable bi-directional relationships")) {
-                    enableFeature2Item.setText("Enable bi-directional relationships");
-                }
+
+        enableFeature2Item.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                    isEnableFeature2 = !isEnableFeature2;
+                    if(enableFeature2Item.getText().equals("Enable bi-directional relationships")){
+                        enableFeature2Item.setText("Disable bi-directional relationships");
+                    }else if(enableFeature2Item.getText().equals("Disable bi-directional relationships")){
+                        enableFeature2Item.setText("Enable bi-directional relationships");
+                    }
             }
 
         });
         this.add(enableFeature2Item);
 
     }
+
 
 
     /**

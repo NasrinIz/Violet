@@ -63,12 +63,20 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         return getContent().contains(p);
     }
 
+    public void setEnableFeature1(boolean isEnableFeature1){
+        this.isEnableFeature1 = isEnableFeature1;
+    }
+
+    public void setEnableFeature2(boolean isEnableFeature2){
+        this.isEnableFeature2 = isEnableFeature2;
+    }
+
     @Override
     public boolean addConnection(IEdge edge) {
-
         INode endingNode = edge.getEndNode();
 
         List<IEdge> edges = super.getConnectedEdges();
+
 
         if (edges.size() > 0 && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
             for (IEdge anEdge : edges) {
@@ -192,4 +200,6 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     private Color backgroundColor;
     private Color borderColor;
     private Color textColor;
+    private boolean isEnableFeature1;
+    private boolean isEnableFeature2;
 }
