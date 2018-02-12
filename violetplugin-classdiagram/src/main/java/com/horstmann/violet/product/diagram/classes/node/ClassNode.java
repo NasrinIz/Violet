@@ -24,6 +24,7 @@ public class ClassNode extends ColorableNode {
      * Construct a class node with a default size
      */
     public ClassNode() {
+
         super();
         name = new SingleLineText(NAME_CONVERTER);
         name.setAlignment(LineText.CENTER);
