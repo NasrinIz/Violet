@@ -111,8 +111,6 @@ public class ClassNode extends ColorableNode {
         return ClassDiagramConstant.CLASS_DIAGRAM_RESOURCE.getString("tooltip.class_node");
     }
 
-
-
     /**
      * Sets the name property value.
      *
@@ -168,7 +166,6 @@ public class ClassNode extends ColorableNode {
     }
 
     private SingleLineText name;
-    private SingleLineText coupling;
     private MultiLineText attributes;
     private MultiLineText methods;
 
