@@ -31,6 +31,7 @@ import com.horstmann.violet.framework.graphics.content.ContentBackground;
 import com.horstmann.violet.framework.graphics.content.ContentBorder;
 import com.horstmann.violet.framework.graphics.content.EmptyContent;
 import com.horstmann.violet.framework.graphics.shape.ContentInsideRoundRectangle;
+import com.horstmann.violet.framework.userpreferences.PreferencesConstant;
 import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.workspace.sidebar.colortools.ColorToolsBarPanel;
 
@@ -63,21 +64,13 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         return getContent().contains(p);
     }
 
-    public void setEnableFeature1(boolean isEnableFeature1) {
-        this.isEnableFeature1 = isEnableFeature1;
-    }
-
-    public void setEnableFeature2(boolean isEnableFeature2) {
-        this.isEnableFeature2 = isEnableFeature2;
-    }
-
     @Override
     public boolean addConnection(IEdge edge) {
-
         INode endingNode = edge.getEndNode();
         String startingNodeID = edge.getStartNode().getId().toString();
 
         List<IEdge> edges = super.getConnectedEdges();
+
 
         if (edges.size() > 0) {
 
@@ -90,27 +83,35 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
                 if (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of")) {
                     // Self call (loop)
                     if (endingNode == null) {
-                        System.out.println("recursive");
+
                         if (anEdgeStartingID.equals(anEdgeEndingID)) {
-                            System.out.println("Can not add more than 1 recursive relationship.");
-                            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                            dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
-                            edge.setEndNode(null);
-                            edge.setEndLocation(null);
+                            if (PreferencesConstant.enableFeature1) {
+                                System.out.println("Can not add more than 1 recursive relationship.");
+                                DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                                dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+                                edge.setEndNode(null);
+                                edge.setEndLocation(null);
+                            } else {
+                                edge.setEndNode(edge.getStartNode());
+                                edge.setEndLocation(edge.getStartLocation());
+                            }
+
                         } else {
                             edge.setEndNode(edge.getStartNode());
                             edge.setEndLocation(edge.getStartLocation());
                         }
                     } else {
-                        String endingNodeID = edge.getEndNode().getId().toString();
+                        if (PreferencesConstant.enableFeature2) {
+                            String endingNodeID = edge.getEndNode().getId().toString();
 
-                        if (anEdgeStartingID.equals(endingNodeID) &&
-                                anEdgeEndingID.equals(startingNodeID)) {
-                            System.out.println("Can not have bidirectional connections.");
-                            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                            dialogFactory.showWarningDialog("Can not have bidirectional connections.");
-                            edge.setEndNode(null);
-                            edge.setEndLocation(null);
+                            if (anEdgeStartingID.equals(endingNodeID) &&
+                                    anEdgeEndingID.equals(startingNodeID)) {
+                                System.out.println("Can not have bidirectional connections.");
+                                DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                                dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+                                edge.setEndNode(null);
+                                edge.setEndLocation(null);
+                            }
                         }
                     }
                 }
@@ -204,6 +205,5 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     private Color backgroundColor;
     private Color borderColor;
     private Color textColor;
-    private boolean isEnableFeature1;
-    private boolean isEnableFeature2;
+
 }

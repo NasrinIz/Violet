@@ -120,4 +120,7 @@ public class PreferencesConstant
         LIST[6] = NETWORK_GUESTCONFIG_HTTP_SERVERURL;
     }
 
+    public static boolean enableFeature1;
+    public static boolean enableFeature2;
+
 }

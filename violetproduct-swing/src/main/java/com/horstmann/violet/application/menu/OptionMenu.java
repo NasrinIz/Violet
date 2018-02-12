@@ -31,6 +31,8 @@ import javax.swing.JMenuItem;
 import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
+import com.horstmann.violet.framework.userpreferences.PreferencesConstant;
+import com.horstmann.violet.product.diagram.classes.ClassDiagramConstant;
 
 /**
  * Help menu
@@ -68,8 +70,10 @@ public class OptionMenu extends JMenu
                 isEnableFeature1 = !isEnableFeature1;
                 if(enableFeature1Item.getText().equals("Enable Multiple Recursive relationships")){
                     enableFeature1Item.setText("Disable Multiple Recursive relationships");
+                    PreferencesConstant.enableFeature1 = isEnableFeature1;
                 }else if(enableFeature1Item.getText().equals("Disable Multiple Recursive relationships")){
                     enableFeature1Item.setText("Enable Multiple Recursive relationships");
+                    PreferencesConstant.enableFeature1 = isEnableFeature1;
                 }
             }
 
@@ -84,8 +88,10 @@ public class OptionMenu extends JMenu
                     isEnableFeature2 = !isEnableFeature2;
                     if(enableFeature2Item.getText().equals("Enable bi-directional relationships")){
                         enableFeature2Item.setText("Disable bi-directional relationships");
+                        PreferencesConstant.enableFeature2 = isEnableFeature2;
                     }else if(enableFeature2Item.getText().equals("Disable bi-directional relationships")){
                         enableFeature2Item.setText("Enable bi-directional relationships");
+                        PreferencesConstant.enableFeature2 = isEnableFeature2;
                     }
             }
 
@@ -107,8 +113,8 @@ public class OptionMenu extends JMenu
     @ResourceBundleBean(key = "option.enableFeature2")
     private JMenuItem enableFeature2Item;
 
-    private static boolean isEnableFeature1 = false;
+    public static boolean isEnableFeature1 = false;
 
-    private static boolean isEnableFeature2 = false;
+    public static boolean isEnableFeature2 = false;
 
 }
