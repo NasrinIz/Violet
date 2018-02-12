@@ -103,7 +103,6 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         this.setCouplingCounter(couplingCounter);
 
         System.out.println(couplingCounter);
-        System.out.println(edge.getStartNode().getToolTip());
 
         return super.addConnection(edge);
     }
