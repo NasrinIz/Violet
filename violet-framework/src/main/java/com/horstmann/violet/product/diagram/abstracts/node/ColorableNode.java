@@ -67,74 +67,73 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     @Override
     public boolean addConnection(IEdge edge) {
         INode endingNode = edge.getEndNode();
-        String startingNodeID = edge.getStartNode().getId().toString();
 
-        List<IEdge> edges = super.getConnectedEdges();
-
-        boolean recursive = false;
-        boolean biDirectional = false;
-
-        if (edges.size() > 0) {
-
-            for (IEdge anEdge : edges) {
-
-                String anEdgeStartingID = anEdge.getStartNode().getId().toString();
-                String anEdgeEndingID = anEdge.getEndNode().getId().toString();
-
-
-                if (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of")) {
-                    // Self call (loop)
-                    if (endingNode == null) {
-
-                        if (anEdgeStartingID.equals(anEdgeEndingID)) {
-                            if (PreferencesConstant.enableFeature1) {
-                                System.out.println("Can not add more than 1 recursive relationship.");
-                                recursive = true;
-                                edge.setEndNode(null);
-                                edge.setEndLocation(null);
-                            } else {
-                                edge.setEndNode(edge.getStartNode());
-                                edge.setEndLocation(edge.getStartLocation());
-                            }
-
-                        } else {
-                            edge.setEndNode(edge.getStartNode());
-                            edge.setEndLocation(edge.getStartLocation());
-                        }
-                    } else {
-                        if (PreferencesConstant.enableFeature2) {
-                            String endingNodeID = edge.getEndNode().getId().toString();
-
-                            if (anEdgeStartingID.equals(endingNodeID) &&
-                                    anEdgeEndingID.equals(startingNodeID)) {
-                                System.out.println("Can not have bidirectional connections.");
-                                biDirectional = true;
-                                edge.setEndNode(null);
-                                edge.setEndLocation(null);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            if (endingNode == null) {
+        if (PreferencesConstant.enableFeature1 && endingNode == null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
+            if (isRecursiveConnection()) {
+                DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+                edge.setEndNode(null);
+                edge.setEndLocation(null);
+            } else {
                 edge.setEndNode(edge.getStartNode());
                 edge.setEndLocation(edge.getStartLocation());
             }
         }
 
-        if (recursive) {
-            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-            dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+        if (PreferencesConstant.enableFeature2 && endingNode != null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
+            if (isBidirectionalConnection(edge)) {
+                DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+                edge.setEndNode(null);
+                edge.setEndLocation(null);
+            }
         }
 
-        if (biDirectional) {
-            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-            dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+        if (!PreferencesConstant.enableFeature1 && endingNode == null) {
+            edge.setEndNode(edge.getStartNode());
+            edge.setEndLocation(edge.getStartLocation());
         }
-
 
         return super.addConnection(edge);
+    }
+
+
+    private boolean isRecursiveConnection() {
+        List<IEdge> edges = super.getConnectedEdges();
+
+        if (edges.size() > 0) {
+            for (IEdge anEdge : edges) {
+                String anEdgeStartingID = anEdge.getStartNode().getId().toString();
+                String anEdgeEndingID = anEdge.getEndNode().getId().toString();
+
+                if (anEdgeStartingID.equals(anEdgeEndingID)) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
+
+    private boolean isBidirectionalConnection(IEdge edge) {
+        List<IEdge> edges = super.getConnectedEdges();
+
+        String startingNodeID = edge.getStartNode().getId().toString();
+        String endingNodeID = edge.getEndNode().getId().toString();
+
+        if (edges.size() > 0) {
+            for (IEdge anEdge : edges) {
+                String anEdgeStartingID = anEdge.getStartNode().getId().toString();
+                String anEdgeEndingID = anEdge.getEndNode().getId().toString();
+
+                if (anEdgeStartingID.equals(endingNodeID) &&
+                        anEdgeEndingID.equals(startingNodeID)) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
     }
 
     @Override
