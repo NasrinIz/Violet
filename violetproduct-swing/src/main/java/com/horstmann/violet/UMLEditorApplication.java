@@ -71,7 +71,6 @@ public class UMLEditorApplication
      */
     public static void main(String[] args)
     {
-        System.out.println("Beginning");
         for (int i = 0; i < args.length; i++)
         {
             String arg = args[i];

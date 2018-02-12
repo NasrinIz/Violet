@@ -63,52 +63,55 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         return getContent().contains(p);
     }
 
-    public void setEnableFeature1(boolean isEnableFeature1){
+    public void setEnableFeature1(boolean isEnableFeature1) {
         this.isEnableFeature1 = isEnableFeature1;
     }
 
-    public void setEnableFeature2(boolean isEnableFeature2){
+    public void setEnableFeature2(boolean isEnableFeature2) {
         this.isEnableFeature2 = isEnableFeature2;
     }
 
     @Override
     public boolean addConnection(IEdge edge) {
+
         INode endingNode = edge.getEndNode();
+        String startingNodeID = edge.getStartNode().getId().toString();
 
         List<IEdge> edges = super.getConnectedEdges();
 
+        if (edges.size() > 0) {
 
-        if (edges.size() > 0 && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
             for (IEdge anEdge : edges) {
 
                 String anEdgeStartingID = anEdge.getStartNode().getId().toString();
                 String anEdgeEndingID = anEdge.getEndNode().getId().toString();
 
-                String startingNodeID = edge.getStartNode().getId().toString();
 
-                // Self call (loop)
-                if (endingNode == null) {
-                    System.out.println("recursive");
-                    if (anEdgeStartingID.equals(anEdgeEndingID)) {
-                        System.out.println("Can not add more than 1 recursive relationship.");
-                        DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                        dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
-                        edge.setEndNode(null);
-                        edge.setEndLocation(null);
+                if (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of")) {
+                    // Self call (loop)
+                    if (endingNode == null) {
+                        System.out.println("recursive");
+                        if (anEdgeStartingID.equals(anEdgeEndingID)) {
+                            System.out.println("Can not add more than 1 recursive relationship.");
+                            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                            dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+                            edge.setEndNode(null);
+                            edge.setEndLocation(null);
+                        } else {
+                            edge.setEndNode(edge.getStartNode());
+                            edge.setEndLocation(edge.getStartLocation());
+                        }
                     } else {
-                        edge.setEndNode(edge.getStartNode());
-                        edge.setEndLocation(edge.getStartLocation());
-                    }
-                } else {
-                    String endingNodeID = edge.getEndNode().getId().toString();
+                        String endingNodeID = edge.getEndNode().getId().toString();
 
-                    if (anEdgeStartingID.equals(endingNodeID) &&
-                            anEdgeEndingID.equals(startingNodeID)) {
-                        System.out.println("Can not have bidirectional connections.");
-                        DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                        dialogFactory.showWarningDialog("Can not have bidirectional connections.");
-                        edge.setEndNode(null);
-                        edge.setEndLocation(null);
+                        if (anEdgeStartingID.equals(endingNodeID) &&
+                                anEdgeEndingID.equals(startingNodeID)) {
+                            System.out.println("Can not have bidirectional connections.");
+                            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+                            dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+                            edge.setEndNode(null);
+                            edge.setEndLocation(null);
+                        }
                     }
                 }
             }
@@ -118,6 +121,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
                 edge.setEndLocation(edge.getStartLocation());
             }
         }
+
         return super.addConnection(edge);
     }
 
