@@ -8,7 +8,6 @@ import com.horstmann.violet.framework.graphics.Separator;
 import com.horstmann.violet.framework.graphics.content.*;
 import com.horstmann.violet.framework.graphics.content.VerticalLayout;
 import com.horstmann.violet.framework.graphics.shape.ContentInsideRectangle;
-import com.horstmann.violet.product.diagram.abstracts.edge.IEdge;
 import com.horstmann.violet.product.diagram.classes.ClassDiagramConstant;
 import com.horstmann.violet.product.diagram.property.text.decorator.*;
 import com.horstmann.violet.product.diagram.property.text.LineText;
@@ -88,10 +87,6 @@ public class ClassNode extends ColorableNode {
 
         setTextColor(super.getTextColor());
 
-
-
-
-
         this.getToolTip();
     }
 
@@ -115,6 +110,8 @@ public class ClassNode extends ColorableNode {
     public String getToolTip() {
         return ClassDiagramConstant.CLASS_DIAGRAM_RESOURCE.getString("tooltip.class_node");
     }
+
+
 
     /**
      * Sets the name property value.
@@ -171,6 +168,7 @@ public class ClassNode extends ColorableNode {
     }
 
     private SingleLineText name;
+    private SingleLineText coupling;
     private MultiLineText attributes;
     private MultiLineText methods;
 

@@ -67,8 +67,9 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     @Override
     public boolean addConnection(IEdge edge) {
         INode endingNode = edge.getEndNode();
+        INode startingNode = edge.getStartNode();
 
-        if (PreferencesConstant.enableFeature1 && endingNode == null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
+        if (PreferencesConstant.enableFeature1 && startingNode.getToolTip().equals("Class") && endingNode == null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
             if (isRecursiveConnection()) {
                 DialogFactory dialogFactory = new DialogFactory(INTERNAL);
                 dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
@@ -80,7 +81,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
             }
         }
 
-        if (PreferencesConstant.enableFeature2 && endingNode != null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
+        if (PreferencesConstant.enableFeature2 && startingNode.getToolTip().equals("Class") && endingNode != null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
             if (isBidirectionalConnection(edge)) {
                 DialogFactory dialogFactory = new DialogFactory(INTERNAL);
                 dialogFactory.showWarningDialog("Can not have bidirectional connections.");
@@ -94,7 +95,22 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
             edge.setEndLocation(edge.getStartLocation());
         }
 
+        int couplingCounter = countCouplingMeasures(edge);
+
+        this.setCouplingCounter(couplingCounter);
+
+        System.out.println(couplingCounter);
+        System.out.println(edge.getStartNode().getToolTip());
         return super.addConnection(edge);
+    }
+
+
+    private void setCouplingCounter(Integer couplingCounter) {
+        this.couplingCounter = couplingCounter;
+    }
+
+    protected Integer getCouplingCounter() {
+        return this.couplingCounter;
     }
 
 
@@ -134,6 +150,25 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
             }
         }
         return false;
+    }
+
+    private int countCouplingMeasures(IEdge edge) {
+        List<IEdge> edges = super.getConnectedEdges();
+
+        int counter = 0;
+        if (edges.size() > 0) {
+            for (IEdge anEdge : edges) {
+                String anEdgeStartingID = anEdge.getStartNode().getId().toString();
+                String anEdgeEndingID = anEdge.getEndNode().getId().toString();
+
+                if (anEdgeStartingID.equals(anEdgeEndingID)) {
+                    counter++;
+                }
+
+            }
+        }
+
+        return edges.size() - counter;
     }
 
     @Override
@@ -215,5 +250,6 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     private Color backgroundColor;
     private Color borderColor;
     private Color textColor;
+    private Integer couplingCounter;
 
 }
