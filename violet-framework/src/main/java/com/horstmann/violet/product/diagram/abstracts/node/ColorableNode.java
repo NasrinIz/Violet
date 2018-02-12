@@ -71,6 +71,8 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
 
         List<IEdge> edges = super.getConnectedEdges();
 
+        boolean recursive = false;
+        boolean biDirectional = false;
 
         if (edges.size() > 0) {
 
@@ -87,8 +89,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
                         if (anEdgeStartingID.equals(anEdgeEndingID)) {
                             if (PreferencesConstant.enableFeature1) {
                                 System.out.println("Can not add more than 1 recursive relationship.");
-                                DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                                dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+                                recursive = true;
                                 edge.setEndNode(null);
                                 edge.setEndLocation(null);
                             } else {
@@ -107,8 +108,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
                             if (anEdgeStartingID.equals(endingNodeID) &&
                                     anEdgeEndingID.equals(startingNodeID)) {
                                 System.out.println("Can not have bidirectional connections.");
-                                DialogFactory dialogFactory = new DialogFactory(INTERNAL);
-                                dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+                                biDirectional = true;
                                 edge.setEndNode(null);
                                 edge.setEndLocation(null);
                             }
@@ -122,6 +122,17 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
                 edge.setEndLocation(edge.getStartLocation());
             }
         }
+
+        if (recursive) {
+            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+            dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
+        }
+
+        if (biDirectional) {
+            DialogFactory dialogFactory = new DialogFactory(INTERNAL);
+            dialogFactory.showWarningDialog("Can not have bidirectional connections.");
+        }
+
 
         return super.addConnection(edge);
     }
