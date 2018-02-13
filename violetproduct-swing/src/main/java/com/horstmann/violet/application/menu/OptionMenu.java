@@ -68,11 +68,11 @@ public class OptionMenu extends JMenu
             public void actionPerformed(ActionEvent e)
             {
                 isEnableFeature1 = !isEnableFeature1;
-                if(enableFeature1Item.getText().equals("Enable Multiple Recursive relationships")){
-                    enableFeature1Item.setText("Disable Multiple Recursive relationships");
+                if(enableFeature1Item.getText().equals("Enable No Multiple Recursive relationships")){
+                    enableFeature1Item.setText("Disable No Multiple Recursive relationships");
                     PreferencesConstant.enableFeature1 = isEnableFeature1;
-                }else if(enableFeature1Item.getText().equals("Disable Multiple Recursive relationships")){
-                    enableFeature1Item.setText("Enable Multiple Recursive relationships");
+                }else if(enableFeature1Item.getText().equals("Disable No Multiple Recursive relationships")){
+                    enableFeature1Item.setText("Enable No Multiple Recursive relationships");
                     PreferencesConstant.enableFeature1 = isEnableFeature1;
                 }
             }
@@ -86,11 +86,11 @@ public class OptionMenu extends JMenu
             public void actionPerformed(ActionEvent e)
             {
                     isEnableFeature2 = !isEnableFeature2;
-                    if(enableFeature2Item.getText().equals("Enable bi-directional relationships")){
-                        enableFeature2Item.setText("Disable bi-directional relationships");
+                    if(enableFeature2Item.getText().equals("Enable No bi-directional relationships")){
+                        enableFeature2Item.setText("Disable No bi-directional relationships");
                         PreferencesConstant.enableFeature2 = isEnableFeature2;
-                    }else if(enableFeature2Item.getText().equals("Disable bi-directional relationships")){
-                        enableFeature2Item.setText("Enable bi-directional relationships");
+                    }else if(enableFeature2Item.getText().equals("Disable No bi-directional relationships")){
+                        enableFeature2Item.setText("Enable No bi-directional relationships");
                         PreferencesConstant.enableFeature2 = isEnableFeature2;
                     }
             }

@@ -66,8 +66,15 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
 
     @Override
     public boolean addConnection(IEdge edge) {
+
         INode endingNode = edge.getEndNode();
         INode startingNode = edge.getStartNode();
+
+        boolean isCurrentEdgeRecursive = false;
+
+        if(endingNode == null){
+            isCurrentEdgeRecursive = true;
+        }
 
         //If feature 1 is enabled checks for recursive connections and if there is one, shows a dialogue
         if (PreferencesConstant.enableFeature1 && startingNode.getToolTip().equals("Class") && endingNode == null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
@@ -98,11 +105,13 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         }
 
         //Calculates coupling
-        int couplingCounter = countCouplingMeasures(edge);
+        int couplingCounter = countCouplingMeasures(edge, isCurrentEdgeRecursive);
 
         this.setCouplingCounter(couplingCounter);
 
-        System.out.println(couplingCounter);
+
+        System.out.println("Coupling count for " + edge.getStartNode().getId().toString() + ": " + couplingCounter);
+
 
         return super.addConnection(edge);
     }
@@ -120,6 +129,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     /**
      * Gets the edges connected to the start node and checks for bidirectional relationships
      * by checking if there exists an edge that its start node and end node are the same.
+     *
      * @return boolean
      */
     private boolean isRecursiveConnection() {
@@ -142,6 +152,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     /**
      * Gets the edges connected to the start node and checks for bidirectional relationships by checking
      * if there exists an edge that its start node and end node are the opposite of the edge being drawn.
+     *
      * @param edge The edge that is currently being drawn
      * @return boolean
      */
@@ -169,26 +180,42 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     /**
      * Gets the edges connected to the start node and checks number of relationships with other classes.
      * It removes recursive relationships.
+     *
      * @param edge The edge that is currently being drawn
      * @return int
      */
-    private int countCouplingMeasures(IEdge edge) {
+    private int countCouplingMeasures(IEdge edge,boolean isCurrentEdgeRecursive) {
         List<IEdge> edges = super.getConnectedEdges();
+        String edgeStartingID = edge.getStartNode().getId().toString();
+        int outgoingEdges = 0;
+        int recursiveEdges = 0;
 
-        int counter = 0;
         if (edges.size() > 0) {
             for (IEdge anEdge : edges) {
                 String anEdgeStartingID = anEdge.getStartNode().getId().toString();
                 String anEdgeEndingID = anEdge.getEndNode().getId().toString();
-
                 if (anEdgeStartingID.equals(anEdgeEndingID)) {
-                    counter++;
+                    recursiveEdges++;
                 }
-
+                if (anEdgeStartingID.equals(edgeStartingID)) {
+                    outgoingEdges++;
+                }
             }
         }
 
-        return edges.size() - counter;
+        if (isCurrentEdgeRecursive) {
+            if(outgoingEdges - recursiveEdges< 0){
+                return 0;
+            }else{
+                return outgoingEdges - recursiveEdges;
+            }
+        } else {
+            if(outgoingEdges - recursiveEdges + 1 < 0){
+                return 0;
+            }else{
+                return outgoingEdges - recursiveEdges + 1;
+            }
+        }
     }
 
     @Override

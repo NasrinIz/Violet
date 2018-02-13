@@ -39,7 +39,6 @@ public class AggregationEdge extends LabeledLineEdge
     @Override
     protected AggregationEdge copy() throws CloneNotSupportedException
     {
-        System.out.println("Adding aggregation edge");
         return new AggregationEdge(this);
     }
 
