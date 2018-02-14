@@ -66,18 +66,14 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
 
     @Override
     public boolean addConnection(IEdge edge) {
-
         INode endingNode = edge.getEndNode();
         INode startingNode = edge.getStartNode();
-
         boolean isCurrentEdgeRecursive = false;
-
-        if(endingNode == null){
+        if (endingNode == null) {
             isCurrentEdgeRecursive = true;
         }
-
         //If feature 1 is enabled checks for recursive connections and if there is one, shows a dialogue
-        if (PreferencesConstant.enableFeature1 && startingNode.getToolTip().equals("Class") && endingNode == null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
+        if (PreferencesConstant.enableFeature1 && endingNode == null && startingNode.getToolTip().equals("Class") && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
             if (isRecursiveConnection()) {
                 DialogFactory dialogFactory = new DialogFactory(INTERNAL);
                 dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
@@ -88,9 +84,8 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
                 edge.setEndLocation(edge.getStartLocation());
             }
         }
-
         //If feature 2 is enabled checks for bidirectional connections and is there is one, shows a dialogue
-        if (PreferencesConstant.enableFeature2 && startingNode.getToolTip().equals("Class") && endingNode != null && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
+        if (PreferencesConstant.enableFeature2 && endingNode != null && startingNode.getToolTip().equals("Class") && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
             if (isBidirectionalConnection(edge)) {
                 DialogFactory dialogFactory = new DialogFactory(INTERNAL);
                 dialogFactory.showWarningDialog("Can not have bidirectional connections.");
@@ -98,21 +93,14 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
                 edge.setEndLocation(null);
             }
         }
-
         if (!PreferencesConstant.enableFeature1 && endingNode == null) {
             edge.setEndNode(edge.getStartNode());
             edge.setEndLocation(edge.getStartLocation());
         }
-
         //Calculates coupling
         int couplingCounter = countCouplingMeasures(edge, isCurrentEdgeRecursive);
-
         this.setCouplingCounter(couplingCounter);
-
-
         System.out.println("Coupling count for " + edge.getStartNode().getId().toString() + ": " + couplingCounter);
-
-
         return super.addConnection(edge);
     }
 
@@ -185,7 +173,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
      * @param edge The edge that is currently being drawn
      * @return int
      */
-    private int countCouplingMeasures(IEdge edge,boolean isCurrentEdgeRecursive) {
+    private int countCouplingMeasures(IEdge edge, boolean isCurrentEdgeRecursive) {
         List<IEdge> edges = super.getConnectedEdges();
         String edgeStartingID = edge.getStartNode().getId().toString();
         int outgoingEdges = 0;
@@ -205,15 +193,15 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         }
 
         if (isCurrentEdgeRecursive) {
-            if(outgoingEdges - recursiveEdges< 0){
+            if (outgoingEdges - recursiveEdges < 0) {
                 return 0;
-            }else{
+            } else {
                 return outgoingEdges - recursiveEdges;
             }
         } else {
-            if(outgoingEdges - recursiveEdges + 1 < 0){
+            if (outgoingEdges - recursiveEdges + 1 < 0) {
                 return 0;
-            }else{
+            } else {
                 return outgoingEdges - recursiveEdges + 1;
             }
         }
