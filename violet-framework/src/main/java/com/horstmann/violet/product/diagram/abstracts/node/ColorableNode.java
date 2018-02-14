@@ -178,8 +178,9 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     }
 
     /**
-     * Gets the edges connected to the start node and checks number of relationships with other classes.
-     * It removes recursive relationships.
+     * counts the number of couplings. It gets the edged
+     * connected to the start node and calculates
+     * outgoing edges and removes recursive relationships.
      *
      * @param edge The edge that is currently being drawn
      * @return int
