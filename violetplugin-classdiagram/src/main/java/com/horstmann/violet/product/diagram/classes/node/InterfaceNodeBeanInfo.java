@@ -3,9 +3,7 @@ package com.horstmann.violet.product.diagram.classes.node;
 import com.horstmann.violet.product.diagram.classes.ClassDiagramConstant;
 import com.horstmann.violet.product.diagram.common.node.ColorableNodeBeanInfo;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
 import java.util.List;
 
 /**

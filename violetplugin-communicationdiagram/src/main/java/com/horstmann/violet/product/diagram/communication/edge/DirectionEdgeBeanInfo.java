@@ -2,9 +2,7 @@ package com.horstmann.violet.product.diagram.communication.edge;
 
 import com.horstmann.violet.product.diagram.common.edge.LabeledLineEdgeBeanInfo;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
 import java.util.List;
 
 /**

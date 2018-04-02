@@ -23,10 +23,6 @@ package com.horstmann.violet.product.diagram.usecase.edge;
 
 import com.horstmann.violet.product.diagram.common.edge.LabeledLineEdgeBeanInfo;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
-
 /**
  * The bean info for the ClassRelationshipEdge type.
  */

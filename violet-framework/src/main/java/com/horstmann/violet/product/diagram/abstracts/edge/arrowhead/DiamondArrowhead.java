@@ -2,7 +2,6 @@ package com.horstmann.violet.product.diagram.abstracts.edge.arrowhead;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
-import java.io.ObjectInputStream.GetField;
 
 /**
  * Array head type : this head is a diamond

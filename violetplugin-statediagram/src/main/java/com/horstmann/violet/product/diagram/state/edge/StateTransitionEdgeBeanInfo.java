@@ -1,6 +1,5 @@
 package com.horstmann.violet.product.diagram.state.edge;
 
-import com.horstmann.violet.framework.injection.resources.ResourceBundleConstant;
 import com.horstmann.violet.framework.util.BeanInfo;
 
 /**

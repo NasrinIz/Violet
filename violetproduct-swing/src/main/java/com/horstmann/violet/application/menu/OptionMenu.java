@@ -32,7 +32,6 @@ import com.horstmann.violet.application.gui.MainFrame;
 import com.horstmann.violet.framework.injection.resources.ResourceBundleInjector;
 import com.horstmann.violet.framework.injection.resources.annotation.ResourceBundleBean;
 import com.horstmann.violet.framework.userpreferences.PreferencesConstant;
-import com.horstmann.violet.product.diagram.classes.ClassDiagramConstant;
 
 /**
  * Help menu

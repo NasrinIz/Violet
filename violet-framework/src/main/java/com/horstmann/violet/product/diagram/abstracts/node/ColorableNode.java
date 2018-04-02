@@ -68,13 +68,16 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
     public boolean addConnection(IEdge edge) {
         INode endingNode = edge.getEndNode();
         INode startingNode = edge.getStartNode();
+
+        List<IEdge> edges = super.getConnectedEdges();
+
         boolean isCurrentEdgeRecursive = false;
         if (endingNode == null) {
             isCurrentEdgeRecursive = true;
         }
         //If feature 1 is enabled checks for recursive connections and if there is one, shows a dialogue
         if (PreferencesConstant.enableFeature1 && endingNode == null && startingNode.getToolTip().equals("Class") && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
-            if (isRecursiveConnection()) {
+            if (isRecursiveConnection(edges)) {
                 DialogFactory dialogFactory = new DialogFactory(INTERNAL);
                 dialogFactory.showWarningDialog("Can not add more than 1 recursive relationship.");
                 edge.setEndNode(null);
@@ -86,7 +89,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
         }
         //If feature 2 is enabled checks for bidirectional connections and is there is one, shows a dialogue
         if (PreferencesConstant.enableFeature2 && endingNode != null && startingNode.getToolTip().equals("Class") && (edge.getToolTip().equals("Is an aggregate of") || edge.getToolTip().equals("Is composed of"))) {
-            if (isBidirectionalConnection(edge)) {
+            if (isBidirectionalConnection(edge, edges)) {
                 DialogFactory dialogFactory = new DialogFactory(INTERNAL);
                 dialogFactory.showWarningDialog("Can not have bidirectional connections.");
                 edge.setEndNode(null);
@@ -98,7 +101,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
             edge.setEndLocation(edge.getStartLocation());
         }
         //Calculates coupling
-        int couplingCounter = countCouplingMeasures(edge, isCurrentEdgeRecursive);
+        int couplingCounter = countCouplingMeasures(edge, isCurrentEdgeRecursive, edges);
         this.setCouplingCounter(couplingCounter);
         System.out.println("Coupling count for " + edge.getStartNode().getId().toString() + ": " + couplingCounter);
         return super.addConnection(edge);
@@ -120,8 +123,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
      *
      * @return boolean
      */
-    private boolean isRecursiveConnection() {
-        List<IEdge> edges = super.getConnectedEdges();
+    private boolean isRecursiveConnection(List<IEdge> edges) {
 
         if (edges.size() > 0) {
             for (IEdge anEdge : edges) {
@@ -144,8 +146,7 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
      * @param edge The edge that is currently being drawn
      * @return boolean
      */
-    private boolean isBidirectionalConnection(IEdge edge) {
-        List<IEdge> edges = super.getConnectedEdges();
+    private boolean isBidirectionalConnection(IEdge edge,  List<IEdge> edges) {
 
         String startingNodeID = edge.getStartNode().getId().toString();
         String endingNodeID = edge.getEndNode().getId().toString();
@@ -173,8 +174,8 @@ public abstract class ColorableNode extends AbstractNode implements IColorableNo
      * @param edge The edge that is currently being drawn
      * @return int
      */
-    private int countCouplingMeasures(IEdge edge, boolean isCurrentEdgeRecursive) {
-        List<IEdge> edges = super.getConnectedEdges();
+    private int countCouplingMeasures(IEdge edge, boolean isCurrentEdgeRecursive,  List<IEdge> edges ) {
+
         String edgeStartingID = edge.getStartNode().getId().toString();
         int outgoingEdges = 0;
         int recursiveEdges = 0;

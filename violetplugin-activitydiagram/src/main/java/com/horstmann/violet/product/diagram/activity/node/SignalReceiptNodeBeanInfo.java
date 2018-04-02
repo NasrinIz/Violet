@@ -2,7 +2,6 @@ package com.horstmann.violet.product.diagram.activity.node;
 
 import com.horstmann.violet.product.diagram.activity.ActivityDiagramConstant;
 import com.horstmann.violet.product.diagram.common.node.ColorableNodeBeanInfo;
-import com.horstmann.violet.product.diagram.common.node.NodeBeanInfo;
 
 import java.beans.PropertyDescriptor;
 import java.util.List;
